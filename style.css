@@ -1,0 +1,482 @@
+:root {
+    --matte-black: #0F0F0F;
+    --rich-gold: #C6A75E;
+    --warm-white: #F8F6F0;
+    --emerald: #1ABC9C;
+    --card-bg: #1A1A1A;
+    --transition-slow: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--matte-black);
+    color: var(--warm-white);
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+/* Global UI */
+#app {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    opacity: 0;
+    background-color: var(--matte-black);
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.page.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    animation: luxuryFadeIn 1.5s forwards;
+}
+
+.bg-white {
+    background-color: var(--warm-white);
+    color: #000;
+}
+
+@keyframes luxuryFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes luxuryFadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.luxury-mute {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    border: 1px solid var(--rich-gold);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--rich-gold);
+    cursor: pointer;
+    z-index: 1000;
+    transition: 0.3s;
+}
+
+#ripple-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 20000;
+}
+
+/* Luxury Buttons */
+.luxury-btn {
+    padding: 1rem 2.5rem;
+    background: transparent;
+    border: 1px solid var(--rich-gold);
+    color: var(--rich-gold);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: var(--transition-slow);
+    margin-top: 3rem;
+}
+
+.luxury-btn:hover {
+    background: var(--rich-gold);
+    color: var(--matte-black);
+    box-shadow: 0 0 30px rgba(198, 167, 94, 0.4);
+}
+
+.dark-btn {
+    border-color: #000;
+    color: #000;
+}
+
+.dark-btn:hover {
+    background: #000;
+    color: #fff;
+}
+
+/* Page 1: Opening */
+.statement-text {
+    font-size: clamp(2rem, 6vw, 4rem);
+    text-align: center;
+    max-width: 800px;
+    letter-spacing: -1px;
+}
+
+.fade-in-delay {
+    opacity: 0;
+    animation: luxuryFadeIn 1.5s 1s forwards;
+}
+
+/* Page 2: Values */
+.values-container {
+    width: 100%;
+    max-width: 1200px;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 1rem;
+    color: var(--rich-gold);
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    margin-bottom: 4rem;
+}
+
+.blueprint-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.value-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(198, 167, 94, 0.2);
+    padding: 4rem 2rem;
+    transition: var(--transition-slow);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.value-card:hover {
+    border-color: var(--rich-gold);
+    transform: translateY(-10px);
+}
+
+.value-index {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--rich-gold);
+    margin-bottom: 1rem;
+    opacity: 0.6;
+}
+
+.value-card h3 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.card-hint {
+    font-size: 0.7rem;
+    color: var(--rich-gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.value-card.expanded {
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    z-index: 1000;
+    background: var(--matte-black);
+    border: 1px solid var(--rich-gold);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10%;
+    cursor: default;
+}
+
+.card-content {
+    margin-top: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.card-content h4 {
+    font-size: 1.5rem;
+    color: var(--rich-gold);
+    margin-bottom: 1rem;
+}
+
+.card-content p {
+    line-height: 1.8;
+    opacity: 0.8;
+}
+
+.bottom-fixed {
+    position: fixed;
+    bottom: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Page 3: Dashboard */
+.dashboard-container {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.premium-label {
+    font-size: 0.8rem;
+    letter-spacing: 5px;
+    color: var(--rich-gold);
+    margin-bottom: 1rem;
+}
+
+.dashboard-heading {
+    font-size: 3rem;
+    margin-bottom: 4rem;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    margin-bottom: 5rem;
+}
+
+.meter-box {
+    text-align: left;
+}
+
+.meter-label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    opacity: 0.6;
+}
+
+.meter-track {
+    height: 2px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.meter-fill {
+    height: 100%;
+    background: var(--rich-gold);
+    width: 0%;
+    transition: width 2s ease-out;
+}
+
+.meter-val {
+    font-size: 0.8rem;
+    color: var(--rich-gold);
+}
+
+.chart-section {
+    margin-bottom: 4rem;
+}
+
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    height: 150px;
+    margin-top: 2rem;
+}
+
+.bar {
+    flex: 1;
+    background: linear-gradient(to top, var(--rich-gold), transparent);
+    height: 0;
+    transition: height 2s;
+}
+
+/* Page 4: Reveal */
+.spotlight-reveal {
+    text-align: center;
+}
+
+.reveal-top {
+    font-size: 1.2rem;
+    letter-spacing: 15px;
+    color: var(--rich-gold);
+    margin-bottom: 2rem;
+    opacity: 0.5;
+}
+
+.reveal-mid {
+    font-size: 2rem;
+    font-style: italic;
+    margin-bottom: 3rem;
+}
+
+.gold-glow-name {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    background: linear-gradient(135deg, #C6A75E 0%, #F5E6A6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 50px rgba(198, 167, 94, 0.4);
+}
+
+/* Page 5: Letter */
+.letter-box {
+    max-width: 700px;
+    padding: 2rem;
+    color: #000;
+}
+
+.typewriter-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    line-height: 2;
+    margin-bottom: 3rem;
+}
+
+.signature-stage {
+    position: relative;
+    padding-top: 2rem;
+}
+
+.sig-path {
+    height: 1px;
+    background: #000;
+    width: 0;
+    transition: 2s;
+}
+
+.sig-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-style: italic;
+    margin-top: 0.5rem;
+    opacity: 0;
+    transition: 1s 1s;
+}
+
+.letter-box.signed .sig-path {
+    width: 100%;
+}
+
+.letter-box.signed .sig-name {
+    opacity: 1;
+}
+
+/* Page 6: Legacy */
+#dust-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.floating-quotes {
+    height: 300px;
+    position: relative;
+    width: 800px;
+}
+
+.float-q {
+    position: absolute;
+    font-style: italic;
+    color: var(--rich-gold);
+    opacity: 0.3;
+    animation: floatAnim 10s infinite linear;
+}
+
+.q1 {
+    top: 10%;
+    left: 20%;
+    font-size: 1.5rem;
+}
+
+.q2 {
+    top: 60%;
+    left: 50%;
+    font-size: 2rem;
+}
+
+.q3 {
+    top: 30%;
+    right: 10%;
+    font-size: 1.2rem;
+}
+
+@keyframes floatAnim {
+    0% {
+        transform: translateY(0) rotate(0);
+    }
+
+    50% {
+        transform: translateY(-20px) rotate(2deg);
+    }
+
+    100% {
+        transform: translateY(0) rotate(0);
+    }
+}
+
+.final-text {
+    font-size: 3rem;
+    text-align: center;
+    line-height: 1.4;
+    letter-spacing: -1px;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .blueprint-cards,
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page {
+        padding: 3rem 1.5rem;
+    }
+}
