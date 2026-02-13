@@ -1,9 +1,14 @@
 :root {
-    --matte-black: #0F0F0F;
-    --rich-gold: #C6A75E;
+    --deep-blue: #1A1F36;
+    --accent-purple: #8E2DE2;
+    --accent-pink: #FF0080;
+    --accent-orange: #FF8C00;
+    --rich-gold: #FFD700;
     --warm-white: #F8F6F0;
     --emerald: #1ABC9C;
-    --card-bg: #1A1A1A;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --sunset-gradient: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 50%, var(--accent-orange) 100%);
+    --bg-gradient: linear-gradient(-45deg, #1A1F36, #242A44, #1A1F36, #2d355a);
     --transition-slow: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -14,11 +19,27 @@
 }
 
 body {
-    background-color: var(--matte-black);
+    background: var(--bg-gradient);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
     color: var(--warm-white);
     font-family: 'Inter', sans-serif;
     overflow: hidden;
     height: 100vh;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 h1,
@@ -43,7 +64,7 @@ h3 {
     height: 100vh;
     display: none;
     opacity: 0;
-    background-color: var(--matte-black);
+    background: transparent;
     padding: 2rem;
     overflow-y: auto;
 }
@@ -115,23 +136,25 @@ h3 {
 
 /* Luxury Buttons */
 .luxury-btn {
-    padding: 1rem 2.5rem;
-    background: transparent;
-    border: 1px solid var(--rich-gold);
-    color: var(--rich-gold);
-    font-size: 0.9rem;
-    font-weight: 700;
+    padding: 1.2rem 3rem;
+    background: var(--sunset-gradient);
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 3px;
     cursor: pointer;
     transition: var(--transition-slow);
     margin-top: 3rem;
+    border-radius: 50px;
+    box-shadow: 0 10px 25px rgba(255, 0, 128, 0.3);
 }
 
 .luxury-btn:hover {
-    background: var(--rich-gold);
-    color: var(--matte-black);
-    box-shadow: 0 0 30px rgba(198, 167, 94, 0.4);
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 15px 40px rgba(255, 0, 128, 0.5);
+    filter: brightness(1.1);
 }
 
 .dark-btn {
@@ -180,17 +203,20 @@ h3 {
 
 .value-card {
     background: var(--card-bg);
-    border: 1px solid rgba(198, 167, 94, 0.2);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 4rem 2rem;
     transition: var(--transition-slow);
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    border-radius: 20px;
 }
 
 .value-card:hover {
-    border-color: var(--rich-gold);
-    transform: translateY(-10px);
+    border-color: var(--accent-pink);
+    transform: perspective(1000px) rotateX(10deg) translateY(-10px);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .value-index {
@@ -216,18 +242,32 @@ h3 {
 
 .value-card.expanded {
     position: fixed;
-    top: 10%;
-    left: 10%;
-    width: 80%;
-    height: 80%;
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 90%;
     z-index: 1000;
-    background: var(--matte-black);
-    border: 1px solid var(--rich-gold);
+    background: var(--deep-blue);
+    border: 2px solid var(--accent-pink);
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 10%;
     cursor: default;
+    border-radius: 40px;
+    animation: expandScale 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes expandScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .card-content {
@@ -303,7 +343,7 @@ h3 {
 
 .meter-fill {
     height: 100%;
-    background: var(--rich-gold);
+    background: var(--sunset-gradient);
     width: 0%;
     transition: width 2s ease-out;
 }
@@ -327,9 +367,10 @@ h3 {
 
 .bar {
     flex: 1;
-    background: linear-gradient(to top, var(--rich-gold), transparent);
+    background: var(--sunset-gradient);
     height: 0;
     transition: height 2s;
+    border-radius: 10px 10px 0 0;
 }
 
 /* Page 4: Reveal */
@@ -353,10 +394,11 @@ h3 {
 
 .gold-glow-name {
     font-size: clamp(2.5rem, 8vw, 5rem);
-    background: linear-gradient(135deg, #C6A75E 0%, #F5E6A6 100%);
+    background: var(--sunset-gradient);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 50px rgba(198, 167, 94, 0.4);
+    text-shadow: 0 0 50px rgba(255, 0, 128, 0.4);
 }
 
 /* Page 5: Letter */

@@ -43,10 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (target.id === 'legacy') initLegacy();
     }
 
-    // --- Global Ripple Effect ---
+    // --- Global Confetti Effect ---
     const rippleCanvas = document.getElementById('ripple-canvas');
     const rCtx = rippleCanvas.getContext('2d');
-    let ripples = [];
+    let particles = [];
 
     function resizeRipple() {
         rippleCanvas.width = window.innerWidth;
@@ -55,38 +55,51 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', resizeRipple);
     resizeRipple();
 
-    class Ripple {
+    class Confetti {
         constructor(x, y) {
             this.x = x; this.y = y;
-            this.radius = 0;
-            this.maxRadius = 150;
-            this.opacity = 0.6;
-            this.speed = 4;
+            this.size = Math.random() * 8 + 4;
+            this.color = this.getRandomColor();
+            this.speedX = Math.random() * 10 - 5;
+            this.speedY = Math.random() * -15 - 5;
+            this.gravity = 0.3;
+            this.rotation = Math.random() * 360;
+            this.rotationSpeed = Math.random() * 10 - 5;
+            this.life = 1;
+            this.decay = Math.random() * 0.01 + 0.01;
+        }
+        getRandomColor() {
+            const colors = ['#8E2DE2', '#FF0080', '#FF8C00', '#FFD700', '#1ABC9C', '#FFFFFF'];
+            return colors[Math.floor(Math.random() * colors.length)];
         }
         update() {
-            this.radius += this.speed;
-            this.opacity -= 0.015;
+            this.speedY += this.gravity;
+            this.x += this.speedX;
+            this.y += this.speedY;
+            this.rotation += this.rotationSpeed;
+            this.life -= this.decay;
         }
         draw() {
-            rCtx.beginPath();
-            rCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            rCtx.strokeStyle = `rgba(198, 167, 94, ${this.opacity})`;
-            rCtx.lineWidth = 2;
-            rCtx.stroke();
+            rCtx.save();
+            rCtx.translate(this.x, this.y);
+            rCtx.rotate(this.rotation * Math.PI / 180);
+            rCtx.globalAlpha = this.life;
+            rCtx.fillStyle = this.color;
+            rCtx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+            rCtx.restore();
         }
     }
 
-    function animateRipples() {
+    function animateParticles() {
         rCtx.clearRect(0, 0, rippleCanvas.width, rippleCanvas.height);
-        ripples = ripples.filter(r => r.opacity > 0);
-        ripples.forEach(r => { r.update(); r.draw(); });
-        requestAnimationFrame(animateRipples);
+        particles = particles.filter(p => p.life > 0);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animateParticles);
     }
-    animateRipples();
+    animateParticles();
 
     window.addEventListener('click', (e) => {
-        if (expandedActive) return; // Don't ripple on expansion close if you want, or keep it.
-        ripples.push(new Ripple(e.clientX, e.clientY));
+        for (let i = 0; i < 30; i++) particles.push(new Confetti(e.clientX, e.clientY));
     });
 
     // --- Page 2: Card Expansion ---
@@ -128,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Page 5: Letter ---
     function initLetter() {
-        const text = "Happy Birthday Coach Anisha Fathima.\nYour guidance shaped thinking.\nYour discipline built strength.\nYour leadership created direction.\nThank you for building futures.";
+        const text = "To the Architect of Futures,\n\nHappy Birthday Coach Anisha Fathima.\nYour guidance is not just a lesson, but a transformation.\nYour discipline is the armor we wear to conquer the world.\nYour leadership is the lighthouse in our darkest hours.\nThank you for seeing the greatness in us before we saw it in ourselves.\n\nYou are building more than skills—you are building a legacy.";
         const el = document.getElementById('letter-text');
         let i = 0;
         el.innerHTML = "";
@@ -137,12 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (i < text.length) {
                 el.innerHTML += text[i] === "\n" ? "<br>" : text[i];
                 i++;
-                setTimeout(type, 50);
+                setTimeout(type, 40);
             } else {
                 document.querySelector('.letter-box').classList.add('signed');
                 setTimeout(() => {
                     document.getElementById('to-legacy').classList.remove('hidden');
-                }, 2500);
+                }, 1500);
             }
         }
         setTimeout(type, 1000);
@@ -189,6 +202,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         animateDust();
 
+        // Update Quotes for Powerful Tone
+        const quotes = document.querySelectorAll('.float-q');
+        const powerfulTexts = [
+            '"Excellence is the only standard."',
+            '"Your potential is a sleeping giant."',
+            '"True leadership is silent but undeniable."'
+        ];
+        quotes.forEach((q, idx) => { if (powerfulTexts[idx]) q.innerText = powerfulTexts[idx]; });
+
         // Reveal final text
         const finalText = document.querySelector('.final-text');
         if (finalText) {
@@ -197,6 +219,20 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => finalText.style.opacity = '1', 1000);
         }
     }
+
+    // --- Cursor Glow Effect ---
+    const cursorGlow = document.createElement('div');
+    cursorGlow.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 600px; height: 600px;
+        background: radial-gradient(circle, rgba(255, 0, 128, 0.08) 0%, transparent 70%);
+        pointer-events: none; z-index: 100; transform: translate(-50%, -50%);
+        transition: transform 0.1s ease; opacity: 0.8;
+    `;
+    document.body.appendChild(cursorGlow);
+    window.addEventListener('mousemove', (e) => {
+        cursorGlow.style.left = `${e.clientX}px`;
+        cursorGlow.style.top = `${e.clientY}px`;
+    });
 
     // --- Mute Toggle ---
     document.getElementById('mute-toggle').addEventListener('click', () => {
